@@ -189,3 +189,19 @@ Attribute VB_Name = "V"
 ' first runout without runout after sorting on top, which is no so right and fine
 '
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+
+
+' 2018-04-16 IV
+' v0.02
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'
+' skip to new name -> QT starts to be FF
+' to fix;
+' no colors on stock
+' no filter
+' no freeze
+' first runout without runout after sorting on top, which is no so right and fine
+' new addons - input comments - converted plt names
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''

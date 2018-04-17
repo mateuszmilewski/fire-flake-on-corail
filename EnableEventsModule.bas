@@ -22,7 +22,7 @@ Attribute VB_Name = "EnableEventsModule"
 'OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 'SOFTWARE.
 
-Private Sub enableEvents()
+Public Sub enableEvents()
     Application.enableEvents = True
     ThisWorkbook.Sheets(FFOC.G_SH_NM_REG).Range("RUN").Value = 0
     Application.Calculate

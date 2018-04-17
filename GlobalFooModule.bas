@@ -3,10 +3,11 @@ Public Function getPlantName(plt) As String
     getPlantName = ""
     
     Dim sh As Worksheet
-    Set sh = ThisWorkbook.Sheets(FFOC.G_SH_NM_PLT_LIST).Range("A2")
+    Set sh = ThisWorkbook.Sheets(FFOC.G_SH_NM_PLT_LIST)
     
     
     Dim r As Range
+    Set r = sh.Range("A2")
     Do
     
         If Trim(r.Value) = Trim(plt) Then
