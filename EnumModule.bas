@@ -51,6 +51,8 @@ End Enum
 'r.Offset(0, 7).Value = "Backlog"
 'r.Offset(0, 8).Value = "Stock"
 
+' NEW: r.offset(0,9) = "Recv"
+
 Public Enum E_COMMON_ORDER
     E_COMMON_PN = 1
     E_COMMON_PLT_CODE
@@ -63,6 +65,7 @@ Public Enum E_COMMON_ORDER
     E_COMMON_FIRST_RUNOUT
     E_COMMON_BACKLOG
     E_COMMON_STOCK
+    E_COMMON_RECV
     E_COMMON_FIRST_RQM
     E_COMMON_FIRST_ORDER
     E_COMMON_FIRST_SHIP

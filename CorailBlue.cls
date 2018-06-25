@@ -65,17 +65,20 @@ Private Sub ICorail_generateInnerIE(r As Range, plt As String, pn As String)
         
         ieh.getNewInnerIE r, plt, pn, True
         ieh.innerWait
-        ieh.braceWithDom BLUE
+        
+        If Not ieh.getFirstTimeOut() Then ieh.braceWithDom BLUE
     End If
 End Sub
 
 Private Function ICorail_getData() As ConvertedData
 
+    If Not ieh.dom.doc Is Nothing Then
+
     
-    Set ieh.dom.iElement = ieh.dom.doc.getElementById("tableLay")
-    Set ieh.dom.table = ieh.dom.iElement
-    Set ICorail_getData = parser.htmlTableToRawMatrix(ieh.dom.table, ieh.dom, BLUE)
-    
+        Set ieh.dom.iElement = ieh.dom.doc.getElementById("tableLay")
+        Set ieh.dom.table = ieh.dom.iElement
+        Set ICorail_getData = parser.htmlTableToRawMatrix(ieh, ieh.dom.table, ieh.dom, BLUE)
+    End If
 End Function
 
 

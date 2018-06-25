@@ -38,6 +38,27 @@ Private stock As Long
 Private recv As Long
 Private backlog As Long
 
+Private cmnt1 As String
+Private cmnt2 As String
+
+Public Property Get getComment1() As String
+
+    getComment1 = CStr(cmnt1)
+End Property
+
+Public Property Get getComment2() As String
+
+    getComment2 = CStr(cmnt2)
+End Property
+
+Public Sub setComment(ktory, arg As String)
+    If ktory = 1 Then cmnt1 = CStr(arg)
+    If ktory = 2 Then cmnt2 = CStr(arg)
+End Sub
+
+
+
+
 Public Property Get getBacklog() As Long
 
     getBacklog = CLng(backlog)
@@ -84,7 +105,9 @@ End Sub
 
 
 Public Property Get pItems() As Collection
+
     Set pItems = cItems
+
 End Property
 
 

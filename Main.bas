@@ -45,15 +45,18 @@ Public Sub Main()
     
     Dim c As CorailHelper, i As InputListHelper
     Set c = New CorailHelper
+    
+    
+    ' this object is an component for main object CorailHelper
     Set i = New InputListHelper
     c.run i
     
     c.putDataOnReportSheet
     c.makeLayout
     
-    ' ! as global one
-    recalcLayoutAndColors ActiveSheet, Range("B4")
-    firstRunoutFormulaFilling ActiveSheet, Range("B4")
+    ' ! as global one : ' public sub from global module
+    FFOC.RunOnSelectionChangeModule.recalcLayoutAndColors ActiveSheet, Range("B4")
+    FFOC.FirstRunoutModule.firstRunoutFormulaFilling ActiveSheet, Range("B4")
     
     ' ------------------------------------------------------------------------
 End Sub
