@@ -65,6 +65,7 @@ Public Function fillFirstRawLabels(r As Range) As Range
     r.Offset(0, FFOC.E_COMMON_FIRST_RUNOUT - 1).Value = "FIRST RUNOUT"
     r.Offset(0, FFOC.E_COMMON_BACKLOG - 1).Value = "Backlog"
     r.Offset(0, FFOC.E_COMMON_STOCK - 1).Value = "Stock"
+    r.Offset(0, FFOC.E_COMMON_RECV - 1).Value = "Recv"
     
     
     Set fillFirstRawLabels = r.Offset(0, FFOC.E_COMMON_FIRST_RQM - 1)
@@ -105,7 +106,20 @@ Public Function getDatesFromDropperAndFillLabels(r As Range, c As Collection) As
     
     If CLng(tempDate) = 0 Then tempDate = Date
     Do
-        r.Offset(-1, 0).Value = CStr(tempDate)
+        
+        r.Offset(-1, 0).NumberFormat = "@"
+        r.Offset(-1, 0).Value = "" + checkDateFormatAndReturnProperValue(tempDate) ' CStr(DateValue(tempDate))
+        
+        If CStr(tempDate) <> CStr(r.Offset(-1, 0).Value) Then
+        
+            ' swap once again month and day
+            ' r.Offset(-1, 0).Value = Mid(r.Offset(-1, 0).Value, 4, 2) & "/" & Left(r.Offset(-1, 0).Value, 2) & "/" & Right(r.Offset(-1, 0).Value, 4)
+            r.Offset(-1, 0).Value = ""
+            r.Offset(-1, 0).Value = Left(tempDate, 2) & "/"
+            r.Offset(-1, 0).Value = r.Offset(-1, 0).Value & Mid(tempDate, 4, 2) & "/"
+            r.Offset(-1, 0).Value = r.Offset(-1, 0).Value & Right(tempDate, 4)
+        End If
+        
         r.Offset(-1, 3).Value = CStr(Weekday(tempDate, vbMonday))
         
         r.Offset(0, 0).Value = "RQM"
@@ -120,6 +134,23 @@ Public Function getDatesFromDropperAndFillLabels(r As Range, c As Collection) As
     
     
     Set getDatesFromDropperAndFillLabels = r
+    
+End Function
+
+
+Private Function checkDateFormatAndReturnProperValue(d As Date) As String
+
+
+    tmp = "" + CStr(d)
+
+    If tmp Like "??/??/????" Then
+    
+        checkDateFormatAndReturnProperValue = "" + Left(tmp, 2) + "/" + Mid(tmp, 4, 2) + "/" + Right(tmp, 4)
+    Else
+    
+        checkDateFormatAndReturnProperValue = CStr(d)
+    End If
+    
     
 End Function
 

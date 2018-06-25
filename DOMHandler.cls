@@ -31,6 +31,8 @@ Attribute VB_Exposed = False
 'SOFTWARE.
 
 
+
+
 Public i As HTMLInputElement
 
 Public recvInputElement As HTMLInputElement

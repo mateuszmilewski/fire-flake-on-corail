@@ -62,7 +62,8 @@ Private Sub ICorail_generateInnerIE(r As Range, plt As String, pn As String)
         
         ieh.getNewInnerIE r, plt, pn, False
         ieh.innerWait
-        ieh.braceWithDom MAESTRO
+        
+        If Not ieh.getFirstTimeOut() Then ieh.braceWithDom MAESTRO
     End If
 
 End Sub
@@ -73,7 +74,7 @@ Private Function ICorail_getData() As ConvertedData
     
     Set ieh.dom.iElement = tryToGetTableWithDateAndRqmsFromMaestro(ieh)
     Set ieh.dom.table = ieh.dom.iElement
-    Set ICorail_getData = parser.htmlTableToRawMatrix(ieh.dom.table, ieh.dom, MAESTRO)
+    Set ICorail_getData = parser.htmlTableToRawMatrix(ieh, ieh.dom.table, ieh.dom, MAESTRO)
     
 End Function
 

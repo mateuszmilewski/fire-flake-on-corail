@@ -44,6 +44,15 @@ Private innerIE As InternetExplorer
 
 Private powloka As ShellHandler
 
+Public txtIsAvail As String
+
+
+
+Private firstTimeOutAndStillNoDataAvailable As Boolean
+
+Public Function getFirstTimeOut() As Boolean
+    getFirstTimeOut = CBool(firstTimeOutAndStillNoDataAvailable)
+End Function
 
 
 Public Property Get pIE() As InternetExplorer
@@ -90,6 +99,7 @@ End Function
 
 Public Sub closeInnerIE()
     
+    On Error Resume Next
     innerIE.Quit
     Set innerIE = Nothing
 End Sub
@@ -104,6 +114,7 @@ Public Sub getNewInnerIE(r As Range, plt As String, pn As String, isCorail As Bo
         innerIE.navigate CStr(url)
         Me.innerWait
     Else
+        ' most probably maestro :)
         Set innerIE = New InternetExplorer
         innerIE.Visible = True
         If Not sprawdzCzyPlantJestAktywnyISzybkiRefresh(plt) Then aktywujPlant plt, innerIE
@@ -136,7 +147,7 @@ Private Sub aktywujPlant(plt As String, ie As InternetExplorer)
         Set r = r.Offset(1, 0)
     Loop Until Trim(r) = ""
 
-    ie.navigate maestroPltUrl
+    ie.navigate maestroPltUrl ' , CLng(2048)
     Me.innerWait
 End Sub
 
@@ -200,105 +211,138 @@ Public Sub braceWithDom(e As E_TYPE_OF_CORAIL)
         
             Set .doc = innerIE.document
             Set .idoc = innerIE.document
+            
+            
+            innerWait
+            Sleep 100
         
             If e = ORANGE Then
-           
             
-                Set .iElementCollectionOfDates = .doc.getElementsByClassName("date")
-                Set .iElementCollectionOfRqms1 = .doc.getElementsByClassName("number fbpcDetailByDay")
-                Set .iElementCollectionOfRqms2 = .doc.getElementsByClassName("number")
-                Set .iElementCollectionOfOrders = .doc.getElementsByClassName("ecwButtonTexteOverOrdered number ecwButtonTexteOver")
-                Set .iElementCollectionOfShipments = .doc.getElementsByClassName("ecwButtonTexteOverShipped number ecwButtonTexteOver")
-                
-                
-                ' this double logic is created becuase in old projects there was undefined issue with assigning problem between objects
-                ' im not sure why it is working in this way, but from time to time i need to be sure that i assign object properly
-                ' so im doubling process of taking elements by tag name of input and give it some extra sleep time...
-                Me.innerWait
-                DoEvents
-                Sleep 200
-                Set .iElementCollection = .doc.getElementsByTagName("input")
-                
-                Me.innerWait
-                DoEvents
-                Sleep 200
-                Set .iElementCollection = .doc.getElementsByTagName("input")
-                
-                podlicz = 0
-                For Each el In .iElementCollection
-                
-                
-                    Set .iElement = el
-                    If CBool(.iElement.className Like "*INPUT_text_Readonly number*") Or CBool(.iElement.className Like "*ecwControlOver INPUT_text_Readonly number*") Then
+                If isDataAvailable(e) Then
+            
+                    Set .iElementCollectionOfDates = .doc.getElementsByClassName("date")
+                    Set .iElementCollectionOfRqms1 = .doc.getElementsByClassName("number fbpcDetailByDay")
+                    Set .iElementCollectionOfRqms2 = .doc.getElementsByClassName("number")
+                    Set .iElementCollectionOfOrders = .doc.getElementsByClassName("ecwButtonTexteOverOrdered number ecwButtonTexteOver")
+                    Set .iElementCollectionOfShipments = .doc.getElementsByClassName("ecwButtonTexteOverShipped number ecwButtonTexteOver")
                     
                     
-
+                    ' this double logic is created becuase in old projects there was undefined issue with assigning problem between objects
+                    ' im not sure why it is working in this way, but from time to time i need to be sure that i assign object properly
+                    ' so im doubling process of taking elements by tag name of input and give it some extra sleep time...
+                    Me.innerWait
+                    DoEvents
+                    Sleep 200
+                    Set .iElementCollection = .doc.getElementsByTagName("input")
+                    
+                    Me.innerWait
+                    DoEvents
+                    Sleep 200
+                    Set .iElementCollection = .doc.getElementsByTagName("input")
+                    
+                    podlicz = 0
+                    For Each el In .iElementCollection
+                    
+                    
+                        Set .iElement = el
+                        If CBool(.iElement.className Like "*INPUT_text_Readonly number*") Or CBool(.iElement.className Like "*ecwControlOver INPUT_text_Readonly number*") Then
                         
-                        If Not Left(.iElement.parentElement.innerHTML, 4) = "<!--" Then
                         
-                        
-                        
-                            ' Coverage scope
-                            ' Stock Depart
-                            ' To be consumed
-                            ' Recv
-                            podlicz = podlicz + 1
-                        
-                            'Debug.Print .iElement.parentElement.innerHTML
-                        
-                            If UCase(.iElement.parentElement.innerHTML) Like UCase("*input*span*onclick*openStockPopup*") Then
-                        
-                                Set .stockInputElement = .iElement
-                                ' Debug.Print .stockInputElement.Value ' OK
-                                'Exit For
-                            End If
+    
+                            
+                            If Not Left(.iElement.parentElement.innerHTML, 4) = "<!--" Then
                             
                             
                             
-                            ' lecimy dalej z szukaniem elementu odpowiadajacego z recv
-                            If podlicz = 3 Then
+                                ' Coverage scope
+                                ' Stock Depart
+                                ' To be consumed
+                                ' Recv
+                                podlicz = podlicz + 1
+                            
+                                'Debug.Print .iElement.parentElement.innerHTML
+                            
+                                If UCase(.iElement.parentElement.innerHTML) Like UCase("*input*span*onclick*openStockPopup*") Then
+                            
+                                    Set .stockInputElement = .iElement
+                                    ' Debug.Print .stockInputElement.Value ' OK
+                                    'Exit For
+                                End If
                                 
-                                Set .recvInputElement = .iElement
-                                ' Exit For
+                                
+                                
+                                ' lecimy dalej z szukaniem elementu odpowiadajacego z recv
+                                If podlicz = 3 Then
+                                    
+                                    Set .recvInputElement = .iElement
+                                    ' Exit For
+                                End If
+                                
+                                
+                                
+                                '  Retard en EF/XP - 14th!
+                                Debug.Print podlicz & " " & .iElement.innerHTML & " " & .iElement.Value
+                                If podlicz = 14 Then
+                                
+                                    Set .backlogInputElement = .iElement
+                                    Debug.Print .backlogInputElement.Value
+                                    ' Exit For
+                                End If
+                                
+                                
                             End If
                             
                             
-                            
-                            '  Retard en EF/XP - 14th!
-                            Debug.Print podlicz & " " & .iElement.innerHTML & " " & .iElement.Value
-                            If podlicz = 14 Then
-                            
-                                Set .backlogInputElement = .iElement
-                                Debug.Print .backlogInputElement.Value
-                                ' Exit For
-                            End If
                             
                             
                         End If
-                        
-                        
-                        
-                        
-                    End If
-                Next el
-                
-                
-                
-                
-            
+                    Next el
+                    
+                End If
+
             ElseIf e = BLUE Then
             
             
+                Sleep 100
+                innerWait
+            
+                If isDataAvailable(e) Then
+
+                    
+                    Set .stockInputElement = .doc.getElementById("stockDepart")
+                    Set .recvInputElement = .doc.getElementById("receivedOnSite")
+                    Set .backlogInputElement = .doc.getElementById("efXpLate")
+                    
+                    innerWait
+                    Sleep 100
+                    Set .stockInputElement = .doc.getElementById("stockDepart")
+                    Set .recvInputElement = .doc.getElementById("receivedOnSite")
+                    Set .backlogInputElement = .doc.getElementById("efXpLate")
                 
-                
-                Set .stockInputElement = .doc.getElementById("stockDepart")
-                Set .recvInputElement = .doc.getElementById("receivedOnSite")
-                Set .backlogInputElement = .doc.getElementById("efXpLate")
+                End If
                 
             ElseIf e = MAESTRO Then
             
-                Set .istockElement = tryGetDataFromMaestro("stock")
-                Set .ibacklogElement = tryGetDataFromMaestro("backlog")
+                Sleep 100
+                innerWait
+                
+                If isDataAvailable(e) Then
+                
+                    
+            
+                    Set .istockElement = tryGetDataFromMaestro("stock")
+                    Set .ibacklogElement = tryGetDataFromMaestro("backlog")
+                    
+                    ' Debug.Print .istockElement.innerHTML
+                    
+                    Sleep 100
+                    innerWait
+                    
+                    Set .istockElement = tryGetDataFromMaestro("stock")
+                    Set .ibacklogElement = tryGetDataFromMaestro("backlog")
+                    
+                    ' Debug.Print .istockElement.innerHTML
+                End If
                 
             ElseIf e = MANUAL Then
             
@@ -320,6 +364,63 @@ Public Sub braceWithDom(e As E_TYPE_OF_CORAIL)
     
     
 End Sub
+
+
+Private Function isDataAvailable(e As E_TYPE_OF_CORAIL) As Boolean
+
+    isDataAvailable = False
+    
+    
+    txtIsAvail = ""
+    
+    If e = MAESTRO Then
+        
+        Set dom.iElement = dom.doc.getElementsByClassName("titrePage")(0)
+        
+        If Not dom.iElement Is Nothing Then
+            
+            If dom.iElement.innerHTML = "Erreur" Then
+                isDataAvailable = False
+                txtIsAvail = "Error. Data is not available in Maestro system."
+            ElseIf dom.iElement.innerHTML = "Detail Produit " Then
+                isDataAvailable = True
+            Else
+                isDataAvailable = False
+            End If
+        Else
+            isDataAvailable = True
+        End If
+        
+    ElseIf e = ORANGE Then
+        
+        isDataAvailable = False
+        txtIsAvail = "Error. Data is not available in Orange Corail system."
+    ElseIf e = BLUE Then
+    
+        Set dom.iElement = dom.doc.getElementById("EcwMessageBar")
+        
+        If Not dom.iElement Is Nothing Then
+        
+            If dom.iElement.innerHTML Like "*Pas de*produit possible pour cet*" Then
+            
+                
+                Sleep 500
+                Application.SendKeys "{ENTER}"
+                Sleep 500
+                Application.SendKeys "{ENTER}"
+                Sleep 500
+                
+                txtIsAvail = "Error. Data is not available in Corail system."
+                isDataAvailable = False
+            Else
+                isDataAvailable = True
+            End If
+        Else
+            isDataAvailable = True
+        End If
+    
+    End If
+End Function
 
 Private Function tryGetDataFromMaestro(what As String) As IHTMLElement
 
@@ -493,18 +594,9 @@ Public Sub publicWait(arg As InternetExplorer)
 End Sub
 
 Public Sub innerWait()
+
     
-    ' this logic is not working with all configs with all pcs
-    'With innerIE
-    '
-    '    Do
-    '        DoEvents
-    '    Loop While .Busy Or .readyState = READYSTATE_LOADING
-    '
-    '    Do
-    '        DoEvents
-    '    Loop Until .readyState = READYSTATE_COMPLETE
-    'End With
+    firstTimeOutAndStillNoDataAvailable = False
     
     Dim x As Integer
     x = 0
@@ -514,7 +606,14 @@ Public Sub innerWait()
         Sleep 100
         x = x + 1
         
-        If x > 500 Then
+        
+        If x > 200 Then
+        
+            firstTimeOutAndStillNoDataAvailable = True
+            txtIsAvail = txtIsAvail & "Unexcepted browser timeout!"
+            Exit Do
+        
+        ElseIf x > 500 Then
             MsgBox "Timeout! Try again!"
             End
             

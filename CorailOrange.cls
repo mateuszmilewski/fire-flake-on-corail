@@ -73,7 +73,7 @@ Private Function ICorail_getData() As ConvertedData
     
     Set ieh.dom.iElement = ieh.dom.doc.getElementById("tableLay")
     Set ieh.dom.table = ieh.dom.iElement
-    Set ICorail_getData = parser.htmlTableToRawMatrix(ieh.dom.table, ieh.dom, ORANGE)
+    Set ICorail_getData = parser.htmlTableToRawMatrix(ieh, ieh.dom.table, ieh.dom, ORANGE)
     
 End Function
 

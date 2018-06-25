@@ -42,6 +42,54 @@ Private e As E_TYPE_OF_CORAIL
 Private sh As Worksheet
 Private layout As TheLayout
 
+
+
+
+
+Public Sub run(listOfPartNumbers As InputListHelper)
+    
+    
+    
+    Set i = listOfPartNumbers.getInputList()
+    
+    Set listaWejsciowa = listOfPartNumbers
+
+    
+    
+    
+    For Each el In i
+    
+        If Not el.EntireRow.Hidden Then
+    
+            If (Trim(el.Value) <> "") And (Trim(el.Offset(0, 1).Value) <> "") Then
+            
+    
+            
+                ' application run independently
+                ' ------------------------------------------------------------------
+    
+                
+                
+                
+                Dim runner As CorailRunner
+                Set runner = New CorailRunner
+                runner.zdarzenie.proceduraDoPodniesieniaEventu el, kolekcja
+                ' runner.zdarzenie.proceduraDoPodniesieniaPrzeniesieniaZawartosciKolekcji kolekcja
+                
+                'Debug.Print kolekcja.Count 'OK
+                
+                Set runner = Nothing
+                
+                
+                ' ------------------------------------------------------------------
+            End If
+        
+        End If
+    Next el
+End Sub
+
+
+
 Public Sub putDataOnReportSheet()
 
     
@@ -113,44 +161,6 @@ Public Sub makeLayout()
 End Sub
 
 
-Public Sub run(listOfPartNumbers As InputListHelper)
-    
-    
-    
-    Set i = listOfPartNumbers.getInputList()
-    
-    Set listaWejsciowa = listOfPartNumbers
-
-    
-    
-    
-    For Each el In i
-    
-        If (Trim(el.Value) <> "") And (Trim(el.Offset(0, 1).Value) <> "") Then
-        
-
-        
-            ' application run independently
-            ' ------------------------------------------------------------------
-
-            
-            
-            
-            Dim runner As CorailRunner
-            Set runner = New CorailRunner
-            runner.zdarzenie.proceduraDoPodniesieniaEventu el, kolekcja
-            runner.zdarzenie.proceduraDoPodniesieniaPrzeniesieniaZawartosciKolekcji kolekcja
-            
-            'Debug.Print kolekcja.Count 'OK
-            
-            Set runner = Nothing
-            
-            
-            ' ------------------------------------------------------------------
-        End If
-    Next el
-End Sub
-
 
 Public Sub runAllPlants()
     
@@ -200,7 +210,7 @@ Public Sub iteracjaOtwierania(adr As String, isMaestroAvail As Boolean)
     
         Set ie = New InternetExplorer
         ie.Visible = True
-        ie.navigate CStr(ir.Value)
+        ie.navigate CStr(ir.Value) ' , CLng(2048)
         
         ieh.pIE = ie
         ieh.publicWait ie
@@ -214,7 +224,7 @@ Public Sub iteracjaOtwierania(adr As String, isMaestroAvail As Boolean)
         
         Set ieh.dom.a = doc.getElementsByClassName("Intro")(0)
         
-        Debug.Print ieh.dom.a.innerHTML
+        ' Debug.Print ieh.dom.a.innerHTML
         ieh.dom.a.Click
         ieh.publicWait ie
         
@@ -223,7 +233,7 @@ Public Sub iteracjaOtwierania(adr As String, isMaestroAvail As Boolean)
         
         Set ie = New InternetExplorer
         ie.Visible = True
-        ie.navigate CStr(ir.Value)
+        ie.navigate CStr(ir.Value) ' , CLng(2048)
         
         With ie
         

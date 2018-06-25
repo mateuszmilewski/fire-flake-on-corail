@@ -60,15 +60,25 @@ Public Sub run(sh As Worksheet, repRow As Long)
     ' plt name
     sh.Cells(repRow, 2 + FFOC.E_COMMON_PLT_NAME - 1).Value = getPlantName(plt)
     
+    If Not dane Is Nothing Then
+        ' comments
+        If Trim(CStr(dane.iteration.getComment1())) <> "" Then
+            sh.Cells(repRow, 2 + FFOC.E_COMMON_CMNT1 - 1).Value = cmnt1 & ", " & CStr(dane.iteration.getComment1())
+        Else
+            sh.Cells(repRow, 2 + FFOC.E_COMMON_CMNT1 - 1).Value = cmnt1
+        End If
+        sh.Cells(repRow, 2 + FFOC.E_COMMON_CMNT2 - 1).Value = cmnt2
+    Else
+        sh.Cells(repRow, 2 + FFOC.E_COMMON_CMNT1 - 1).Value = cmnt1
+        sh.Cells(repRow, 2 + FFOC.E_COMMON_CMNT2 - 1).Value = cmnt2
+    End If
     
-    ' comments
-    sh.Cells(repRow, 2 + FFOC.E_COMMON_CMNT1 - 1).Value = cmnt1
-    sh.Cells(repRow, 2 + FFOC.E_COMMON_CMNT2 - 1).Value = cmnt2
     
     
     If Not dane Is Nothing Then
         'stock + recv
-        sh.Cells(repRow, 2 + FFOC.E_COMMON_STOCK - 1).Value = dane.iteration.getStock + dane.iteration.getRecv
+        sh.Cells(repRow, 2 + FFOC.E_COMMON_STOCK - 1).Value = dane.iteration.getStock
+        sh.Cells(repRow, 2 + FFOC.E_COMMON_RECV - 1).Value = dane.iteration.getRecv
         sh.Cells(repRow, 2 + FFOC.E_COMMON_BACKLOG - 1).Value = dane.iteration.getBacklog
         
     Else
@@ -78,22 +88,38 @@ Public Sub run(sh As Worksheet, repRow As Long)
     End If
     
     
+    Dim item As CorailItem, gdzieJestRecvOffsetowo As Integer
+    gdzieJestRecvOffsetowo = -4
+    
     If Not dane Is Nothing Then
     
     
-        Dim item As CorailItem
+        
+        
         Set r = sh.Cells(repRow, FFOC.E_COMMON_FIRST_RQM + 1)
         i = 0
         Do
             dstr = CStr(r.Parent.Cells(3, r.Column).Value)
             
+            If dstr = "" Then
+                Exit Do
+            End If
+            
+            If CDate(dstr) < Date Then
+                gdzieJestRecvOffsetowo = gdzieJestRecvOffsetowo - 4
+            End If
+            
             If Trim(dstr) <> "" Then
+            
+                Application.enableEvents = False
         
                 For Each item In dane.iteration.pItems
                 
                 
                 
-                    If CStr(dstr) = CStr(item.getStringDate) Then
+                    If matchDates(dstr, item.getStringDate) Then
+                    
+                        
                 
                         r.Value = (item.besoinsBC + item.besoinsPC)
                         r.Offset(0, 1).Value = item.order
@@ -105,7 +131,29 @@ Public Sub run(sh As Worksheet, repRow As Long)
                 
                 Next item
             
-                r.Offset(0, 3).FormulaR1C1 = "=RC[-1]-RC[-3]+RC[-4]"
+            
+                ' so now this line is really important from balance perspective - need to adjust it properly
+                ' first of all need to check if it is a very first element of the item so ...
+                ' another thing is to add recv dynamically to the today date
+                ' Debug.Print dstr
+                
+                If r.Column = (FFOC.E_COMMON_FIRST_RQM + 1) And CDate(dstr) < Date Then
+                    r.Offset(0, 3).FormulaR1C1 = "=RC[-1]-RC[-3]+RC[-5]"
+                    
+                ElseIf r.Column = (FFOC.E_COMMON_FIRST_RQM + 1) And CDate(dstr) >= Date Then
+                    r.Offset(0, 3).FormulaR1C1 = "=RC[-1]-RC[-3]+RC[-5]+RC[" & CStr(gdzieJestRecvOffsetowo) & "]"
+                    
+                ElseIf CDate(dstr) = Date Then
+                    ' addtionally adding dynamically recv param
+                    r.Offset(0, 3).FormulaR1C1 = "=RC[-1]-RC[-3]+RC[-4]+RC[" & CStr(gdzieJestRecvOffsetowo) & "]"
+                    
+                Else
+                    r.Offset(0, 3).FormulaR1C1 = "=RC[-1]-RC[-3]+RC[-4]"
+                    
+                End If
+                
+                
+                Application.enableEvents = True
             
                 i = i + 1
             
@@ -120,11 +168,31 @@ Public Sub run(sh As Worksheet, repRow As Long)
         Do
         
             dstr = CStr(r.Parent.Cells(3, r.Column).Value)
+            If CDate(dstr) < Date Then
+                gdzieJestRecvOffsetowo = gdzieJestRecvOffsetowo - 4
+            End If
             
             If Trim(dstr) <> "" Then
             
             
-                r.Offset(0, 3).FormulaR1C1 = "=RC[-1]-RC[-3]+RC[-4]"
+                ' r.Offset(0, 3).FormulaR1C1 = "=RC[-1]-RC[-3]+RC[-4]"
+                If r.Column = (FFOC.E_COMMON_FIRST_RQM + 1) And CDate(dstr) < Date Then
+                    r.Offset(0, 3).FormulaR1C1 = "=RC[-1]-RC[-3]+RC[-5]"
+                    
+                ElseIf r.Column = (FFOC.E_COMMON_FIRST_RQM + 1) And CDate(dstr) >= Date Then
+                    r.Offset(0, 3).FormulaR1C1 = "=RC[-1]-RC[-3]+RC[-5]+RC[" & CStr(gdzieJestRecvOffsetowo) & "]"
+                    
+                ElseIf CDate(dstr) = Date Then
+                    ' addtionally adding dynamically recv param
+                    r.Offset(0, 3).FormulaR1C1 = "=RC[-1]-RC[-3]+RC[-4]+RC[" & CStr(gdzieJestRecvOffsetowo) & "]"
+                    
+                Else
+                    r.Offset(0, 3).FormulaR1C1 = "=RC[-1]-RC[-3]+RC[-4]"
+                    
+                End If
+                
+                
+                
                 Set r = r.Offset(0, G_ITEM_OFFSET)
                 
                 
@@ -138,32 +206,47 @@ End Sub
 
 
 
-
+Private Function matchDates(d1 As Variant, d2 As Variant) As Boolean
+    matchDates = False
+    
+    innerd1 = CDate(d1)
+    innerd2 = CDate(d2)
+    
+    
+    If Year(innerd1) = Year(innerd2) And Month(innerd1) = Month(innerd2) And Day(innerd1) = Day(innerd2) Then
+        matchDates = True
+    End If
+End Function
 
 Public Function getFirstDate() As Date
 
     If Not dane Is Nothing Then
     
         Dim item As CorailItem
-        Set item = dane.iteration.pItems(1)
+        Set item = Nothing
+        If dane.iteration.pItems.Count > 0 Then Set item = dane.iteration.pItems(1)
         Dim tmpDate As Date
         
+        If Not item Is Nothing Then
         
-        
-        If CLng(item.getDate()) > 0 Then
-        
-            tmpDate = CDate(item.getDate())
+            If CLng(item.getDate()) > 0 Then
             
-        
-            For Each item In dane.iteration.pItems
+                tmpDate = CDate(item.getDate())
                 
-                If CDate(item.getDate) < CDate(tmpDate) Then
-                    tmpDate = item.getDate
-                End If
-                
-            Next item
             
-            getFirstDate = tmpDate
+                For Each item In dane.iteration.pItems
+                    
+                    If CDate(item.getDate) < CDate(tmpDate) Then
+                        tmpDate = item.getDate
+                    End If
+                    
+                Next item
+                
+                getFirstDate = tmpDate
+            Else
+                getFirstDate = Date
+            End If
+            
         Else
             getFirstDate = Date
         End If
@@ -179,26 +262,30 @@ Public Function getLastDate() As Date
     If Not dane Is Nothing Then
     
         Dim item As CorailItem
-        Set item = dane.iteration.pItems(1)
+        Set item = Nothing
+        If dane.iteration.pItems.Count > 0 Then Set item = dane.iteration.pItems(1)
         Dim tmpDate As Date
         
         ' Debug.Print item.getDate() & " " & CLng(item.getDate())
+        If Not item Is Nothing Then
         
-        
-        If CLng(item.getDate()) > 0 Then
-        
-            tmpDate = CDate(item.getDate())
+            If CLng(item.getDate()) > 0 Then
             
-        
-            For Each item In dane.iteration.pItems
+                tmpDate = CDate(item.getDate())
                 
-                If CDate(item.getDate) > CDate(tmpDate) Then
-                    tmpDate = item.getDate
-                End If
-                
-            Next item
             
-            getLastDate = tmpDate
+                For Each item In dane.iteration.pItems
+                    
+                    If CDate(item.getDate) > CDate(tmpDate) Then
+                        tmpDate = item.getDate
+                    End If
+                    
+                Next item
+                
+                getLastDate = tmpDate
+            Else
+                getLastDate = Date
+            End If
         Else
             getLastDate = Date
         End If
