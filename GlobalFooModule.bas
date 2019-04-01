@@ -1,10 +1,8 @@
 Attribute VB_Name = "GlobalFooModule"
 'The MIT License (MIT)
 '
-' Copyright (c) 2018 FORREST
+'Copyright (c) 2018 FORREST
 ' Mateusz Milewski mateusz.milewski@opel.com aka FORREST
-'
-' The QT - quickTool
 '
 'Permission is hereby granted, free of charge, to any person obtaining a copy
 'of this software and associated documentation files (the "Software"), to deal
@@ -23,7 +21,6 @@ Attribute VB_Name = "GlobalFooModule"
 'LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 'OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 'SOFTWARE.
-
 
 Public Function getPlantName(plt) As String
     getPlantName = ""

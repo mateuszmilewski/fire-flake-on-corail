@@ -96,7 +96,8 @@ Private Sub zdarzenie_initCorail(r As Range, kolekcja As Collection)
     
         With c
             
-            .generateInnerIE r, CStr(plt), CStr(pn)
+            ' .generateInnerIE r, CStr(plt), CStr(pn)
+            .generateInnerHttpRequest r, CStr(plt), CStr(pn)
             Set dane = .getData()
     
     
@@ -113,7 +114,7 @@ Private Sub zdarzenie_initCorail(r As Range, kolekcja As Collection)
             ' -----------------------------------------------------------------------
             
             
-            .closeInnerIE
+            ' .closeInnerIE
     
         End With
     End If

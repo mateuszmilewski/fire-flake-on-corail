@@ -55,7 +55,7 @@ Private Sub innerOpenPartNumber()
         End If
     End If
     
-    GoToPNForm.Show vbModeless
+    GoToPNForm.show vbModeless
 End Sub
 
 

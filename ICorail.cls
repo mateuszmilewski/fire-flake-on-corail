@@ -35,6 +35,10 @@ Public Sub generateInnerIE(r As Range, plt As String, pn As String)
 
 End Sub
 
+Public Sub generateInnerHttpRequest(r As Range, plt As String, pn As String)
+
+End Sub
+
 Public Function getData() As ConvertedData
 
 End Function

@@ -34,13 +34,13 @@ Attribute VB_Exposed = False
 ' date of item
 Private d As Date
 ' required qty
-Public besoinsPC As Long
+Public besoinsPC As Double
 ' required qty (BC)
-Public besoinsBC As Long
+Public besoinsBC As Double
 ' order - ordered Qty
-Public order As Long
+Public order As Double
 ' ship - shipped Qty
-Public ship As Long
+Public ship As Double
 
 
 Public Function getDate() As Date

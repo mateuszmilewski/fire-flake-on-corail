@@ -36,24 +36,34 @@ Implements ICorail
 
 
 Private ieh As IEHandler
+Private req As HTTPRequestHandler
 Private parser As ParserHandler
 
 
 
 Private Sub Class_Initialize()
     Set ieh = Nothing
+    'Set req = New HTTPRequestHandler
     Set parser = New ParserHandler
 End Sub
 
 Private Sub Class_Terminate()
     Set ieh = Nothing
     Set parser = Nothing
+    'Set req = Nothing
 End Sub
 
 Private Sub ICorail_closeInnerIE()
     
     ieh.closeInnerIE
     
+End Sub
+
+Private Sub ICorail_generateInnerHttpRequest(r As Range, plt As String, pn As String)
+
+    Set req = New HTTPRequestHandler
+    req.init plt, pn
+    req.braceWithDom BLUE
 End Sub
 
 Private Sub ICorail_generateInnerIE(r As Range, plt As String, pn As String)
@@ -72,12 +82,19 @@ End Sub
 
 Private Function ICorail_getData() As ConvertedData
 
-    If Not ieh.dom.doc Is Nothing Then
+    If Not ieh Is Nothing Then
 
     
         Set ieh.dom.iElement = ieh.dom.doc.getElementById("tableLay")
         Set ieh.dom.table = ieh.dom.iElement
-        Set ICorail_getData = parser.htmlTableToRawMatrix(ieh, ieh.dom.table, ieh.dom, BLUE)
+        Set ICorail_getData = parser.htmlTableToRawMatrix(ieh.dom.table, ieh.dom, BLUE)
+    ElseIf Not req Is Nothing Then
+        
+        Set req.dom.iElement = req.dom.doc.getElementById("tableLay")
+        Set req.dom.table = req.dom.iElement
+        Set ICorail_getData = parser.htmlTableToRawMatrix(req.dom.table, req.dom, BLUE)
+    Else
+        Set ICorail_getData = Nothing
     End If
 End Function
 

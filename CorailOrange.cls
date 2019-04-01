@@ -55,6 +55,10 @@ Private Sub ICorail_closeInnerIE()
     
 End Sub
 
+Private Sub ICorail_generateInnerHttpRequest(r As Range, plt As String, pn As String)
+
+End Sub
+
 Private Sub ICorail_generateInnerIE(r As Range, plt As String, pn As String)
 
     Set ieh = New IEHandler
@@ -73,7 +77,7 @@ Private Function ICorail_getData() As ConvertedData
     
     Set ieh.dom.iElement = ieh.dom.doc.getElementById("tableLay")
     Set ieh.dom.table = ieh.dom.iElement
-    Set ICorail_getData = parser.htmlTableToRawMatrix(ieh, ieh.dom.table, ieh.dom, ORANGE)
+    Set ICorail_getData = parser.htmlTableToRawMatrix(ieh.dom.table, ieh.dom, ORANGE)
     
 End Function
 

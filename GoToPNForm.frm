@@ -38,7 +38,7 @@ Attribute VB_Exposed = False
 
 
 Private Sub BtnSubmit_Click()
-    Hide
+    hide
     
     If Me.TextBoxCorailType.Value <> "" Then
         If Me.TextBoxPlt.Value <> "" Then

@@ -34,10 +34,12 @@ Attribute VB_Exposed = False
 Implements ICorail
 
 Private ieh As IEHandler
+Private req As HTTPRequestHandler
 Private parser As ParserHandler
 
 Private Sub Class_Initialize()
     Set ieh = Nothing
+    'Set req = New HTTPRequestHandler
     Set parser = New ParserHandler
 End Sub
 
@@ -51,6 +53,12 @@ Private Sub ICorail_closeInnerIE()
     
     ieh.closeInnerIE
     
+End Sub
+
+Private Sub ICorail_generateInnerHttpRequest(r As Range, plt As String, pn As String)
+    Set req = New HTTPRequestHandler
+    req.init plt, pn
+    req.braceWithDom MAESTRO
 End Sub
 
 Private Sub ICorail_generateInnerIE(r As Range, plt As String, pn As String)
@@ -72,12 +80,38 @@ Private Function ICorail_getData() As ConvertedData
 
     Set ICorail_getData = Nothing
     
-    Set ieh.dom.iElement = tryToGetTableWithDateAndRqmsFromMaestro(ieh)
-    Set ieh.dom.table = ieh.dom.iElement
-    Set ICorail_getData = parser.htmlTableToRawMatrix(ieh, ieh.dom.table, ieh.dom, MAESTRO)
+    If Not ieh Is Nothing Then
+        Set ieh.dom.iElement = tryToGetTableWithDateAndRqmsFromMaestro(ieh)
+        Set ieh.dom.table = ieh.dom.iElement
+        Set ICorail_getData = parser.htmlTableToRawMatrix(ieh.dom.table, ieh.dom, MAESTRO)
+    Else
+        Set req.dom.iElement = tryToGetTableWithDateAndRqmsFromMaestroNewForHttpRequest()
+        Set req.dom.table = req.dom.iElement
+        Set ICorail_getData = parser.htmlTableToRawMatrix(req.dom.table, req.dom, MAESTRO)
+    End If
     
 End Function
 
+Private Function tryToGetTableWithDateAndRqmsFromMaestroNewForHttpRequest()
+    Set tryToGetTableWithDateAndRqmsFromMaestroNewForHttpRequest = Nothing
+    
+    Set req.dom.iElementCollection = req.dom.doc.getElementsByTagName("table")
+    
+    podlicz = 0
+    
+    For Each el In req.dom.iElementCollection
+        Set req.dom.iElement = el
+        
+        ' Debug.Print req.dom.iElement.innerHTML
+        
+        If podlicz = 9 Then
+            Set tryToGetTableWithDateAndRqmsFromMaestroNewForHttpRequest = req.dom.iElement
+            Exit Function
+        End If
+        
+        podlicz = podlicz + 1
+    Next el
+End Function
 
 Private Function tryToGetTableWithDateAndRqmsFromMaestro(ieh As IEHandler)
     Set tryToGetTableWithDateAndRqmsFromMaestro = Nothing

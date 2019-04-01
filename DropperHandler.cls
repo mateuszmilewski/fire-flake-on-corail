@@ -76,14 +76,33 @@ Public Sub run(sh As Worksheet, repRow As Long)
     
     
     If Not dane Is Nothing Then
-        'stock + recv
-        sh.Cells(repRow, 2 + FFOC.E_COMMON_STOCK - 1).Value = dane.iteration.getStock
-        sh.Cells(repRow, 2 + FFOC.E_COMMON_RECV - 1).Value = dane.iteration.getRecv
-        sh.Cells(repRow, 2 + FFOC.E_COMMON_BACKLOG - 1).Value = dane.iteration.getBacklog
+        'stock + recv - hazards !!! but only when checkbox avail.
+        If FFOC.G_HAZARDS Then
+        
+        
+            ' stock depart and hazards
+            sh.Cells(repRow, 2 + FFOC.E_COMMON_STOCK - 1).AddComment "STOCK: " & _
+            CStr(CDbl(dane.iteration.getStock)) & Chr(10) & _
+            "HAZARDS: " & CStr(CDbl(dane.iteration.getAleas))
+            
+            sh.Cells(repRow, 2 + FFOC.E_COMMON_STOCK - 1).Value = CDbl(dane.iteration.getStock) + CDbl(dane.iteration.getAleas)
+            
+        Else
+            ' stock depart only
+            sh.Cells(repRow, 2 + FFOC.E_COMMON_STOCK - 1).Value = CDbl(dane.iteration.getStock)
+        End If
+        
+        sh.Cells(repRow, 2 + FFOC.E_COMMON_RECV - 1).Value = CDbl(dane.iteration.getRecv)
+        sh.Cells(repRow, 2 + FFOC.E_COMMON_BACKLOG - 1).Value = CDbl(dane.iteration.getBacklog)
+        
+        sh.Cells(repRow, 2 + FFOC.E_COMMON_PART_NAME - 1).Value = dane.iteration.getPartName
+        sh.Cells(repRow, 2 + FFOC.E_COMMON_SUPPLIER - 1).Value = dane.iteration.getSupplier
+        
+        sh.Cells(repRow, 2 + FFOC.E_COMMON_RESP - 1).Value = dane.iteration.getresp
         
     Else
-        sh.Cells(repRow, 2 + FFOC.E_COMMON_STOCK - 1).Value = 0
-        sh.Cells(repRow, 2 + FFOC.E_COMMON_BACKLOG - 1).Value = 0
+        sh.Cells(repRow, 2 + FFOC.E_COMMON_STOCK - 1).Value = 0#
+        sh.Cells(repRow, 2 + FFOC.E_COMMON_BACKLOG - 1).Value = 0#
         
     End If
     
@@ -121,9 +140,9 @@ Public Sub run(sh As Worksheet, repRow As Long)
                     
                         
                 
-                        r.Value = (item.besoinsBC + item.besoinsPC)
-                        r.Offset(0, 1).Value = item.order
-                        r.Offset(0, 2).Value = item.ship
+                        r.Value = CDbl(item.besoinsBC + item.besoinsPC)
+                        r.Offset(0, 1).Value = CDbl(item.order)
+                        r.Offset(0, 2).Value = CDbl(item.ship)
                         
                         Exit For
                     End If
@@ -168,14 +187,19 @@ Public Sub run(sh As Worksheet, repRow As Long)
         Do
         
             dstr = CStr(r.Parent.Cells(3, r.Column).Value)
+            
+            If dstr = "" Then
+                Exit Do
+            End If
+            
+            
             If CDate(dstr) < Date Then
                 gdzieJestRecvOffsetowo = gdzieJestRecvOffsetowo - 4
             End If
             
             If Trim(dstr) <> "" Then
+                Application.enableEvents = False
             
-            
-                ' r.Offset(0, 3).FormulaR1C1 = "=RC[-1]-RC[-3]+RC[-4]"
                 If r.Column = (FFOC.E_COMMON_FIRST_RQM + 1) And CDate(dstr) < Date Then
                     r.Offset(0, 3).FormulaR1C1 = "=RC[-1]-RC[-3]+RC[-5]"
                     
@@ -192,7 +216,7 @@ Public Sub run(sh As Worksheet, repRow As Long)
                 End If
                 
                 
-                
+                Application.enableEvents = True
                 Set r = r.Offset(0, G_ITEM_OFFSET)
                 
                 

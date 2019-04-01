@@ -91,3 +91,11 @@ Global Const G_ITEM_OFFSET = 4
 Global Const G_ITEM_OFFSET_LEAN = 3
 Global Const G_ITEM_OFFSET_EXTENDED = 5
 ' ---------------------------------------------
+
+
+
+
+
+Global G_LOGIN As String
+Global G_PASS As String
+Global G_HAZARDS As Boolean
