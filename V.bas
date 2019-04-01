@@ -1,7 +1,7 @@
 Attribute VB_Name = "V"
 'The MIT License (MIT)
 '
-' Copyright (c) 2018 FORREST
+' Copyright (c) 2019 FORREST
 ' Mateusz Milewski mateusz.milewski@opel.com aka FORREST
 '
 ' The QT - quickTool
@@ -244,3 +244,54 @@ Attribute VB_Name = "V"
 '
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
+
+' 2018-06-25
+' v0.07
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'
+' final fixes - layout adjustment - prototype for tests.
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+
+
+
+' v0.08
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'
+' fix on dropper for manual parts...
+'
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+
+' v0.11
+' foo loaded in IEHandler adjusted
+
+
+
+' v0.20
+' try to use winHttp
+
+
+' v.21
+' added part name + supplier
+
+
+' v.22 happy copy during tests for tychy plant - performance check on more than 100 parts
+
+' v.23 - monior fixes on layout
+
+' v.24 login - label change - preperation for hourly and weekly
+
+
+' v.25
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'fix for decimal places in coverage + minor fixes with decimal treatment
+'on parser (important) I've used: application.DecimalSeparator
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+
+' v.27
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+' feature - added hazards into stock if checkbox value is true
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''

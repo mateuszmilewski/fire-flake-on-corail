@@ -1,15 +1,21 @@
-VERSION 1.0 CLASS
-BEGIN
-  MultiUse = -1  'True
-END
-Attribute VB_Name = "CorailManual"
+VERSION 5.00
+Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} Login 
+   Caption         =   "Fire Flake"
+   ClientHeight    =   2955
+   ClientLeft      =   45
+   ClientTop       =   375
+   ClientWidth     =   6090
+   OleObjectBlob   =   "Login.frx":0000
+   StartUpPosition =   1  'CenterOwner
+End
+Attribute VB_Name = "Login"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
-Attribute VB_PredeclaredId = False
+Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 'The MIT License (MIT)
 '
-'Copyright (c) 2017 FORREST
+'Copyright (c) 2018 FORREST
 ' Mateusz Milewski mateusz.milewski@opel.com aka FORREST
 '
 'Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -31,30 +37,19 @@ Attribute VB_Exposed = False
 'SOFTWARE.
 
 
-Implements ICorail
+Private Sub BtnSubmit_Click()
 
 
-
-
-Private Sub ICorail_closeInnerIE()
+    Dim login As String, pass As String
     
-
     
-End Sub
-
-Private Sub ICorail_generateInnerHttpRequest(r As Range, plt As String, pn As String)
-
-End Sub
-
-Private Sub ICorail_generateInnerIE(r As Range, plt As String, pn As String)
-
-
-End Sub
-
-Private Function ICorail_getData() As ConvertedData
-
-    Set ICorail_getData = Nothing
+    G_LOGIN = CStr(Me.TextBoxLogin.Value)
+    G_PASS = CStr(Me.TextBoxPassword.Value)
+    G_HAZARDS = CBool(Me.CheckBoxHazards.Value)
     
-End Function
-
+    
+    hide
+    
+    innerFromLogin
+End Sub
 

@@ -9,7 +9,7 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 'The MIT License (MIT)
 '
-'Copyright (c) 2017 FORREST
+'Copyright (c) 2019 FORREST
 ' Mateusz Milewski mateusz.milewski@opel.com aka FORREST
 '
 'Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -29,6 +29,7 @@ Attribute VB_Exposed = False
 'LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 'OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 'SOFTWARE.
+
 
 Private dateCatcher As String
 
@@ -76,7 +77,7 @@ End Property
 
 
 
-Public Function htmlTableToRawMatrix(ieh As IEHandler, tb As HTMLTable, dom As DOMHandler, e As E_TYPE_OF_CORAIL) As ConvertedData
+Public Function htmlTableToRawMatrix(tb As HTMLTable, dom As DOMHandler, e As E_TYPE_OF_CORAIL) As ConvertedData
 
     Dim htmlString As String
     Dim tmp As ConvertedData
@@ -95,6 +96,13 @@ Public Function htmlTableToRawMatrix(ieh As IEHandler, tb As HTMLTable, dom As D
     Dim tmpStock As String
     Dim tmpRecv As String
     Dim tmpBacklog As String
+    Dim tmpHazards As String
+    
+    Dim tmpResp2 As String
+    
+    
+    Dim tmpSupplier As String
+    Dim tmpPartName As String
     
     Set ii = New CorailIteration
         
@@ -282,10 +290,13 @@ Public Function htmlTableToRawMatrix(ieh As IEHandler, tb As HTMLTable, dom As D
                                     arr = Split(s, ">")
                                     s = arr(1)
                                     s = Replace(UCase(s), "</DIV", "")
-                                    s = Replace(s, ".0", "")
-                                    s = Replace(s, ",0", "")
+'                                    s = Replace(s, ".0", "")
+'                                    s = Replace(s, ",0", "")
                                     
-                                    i.besoinsPC = CLng(s)
+                                    ' s = replaceAllDecimals(s)
+                                    
+                                    i.besoinsPC = CDbl(Replace(s, ".", Application.DecimalSeparator))
+                                    'Debug.Print i.besoinsPC
                                     
                                 ElseIf UCase(Replace(c.innerHTML, Chr(34), "")) Like "*" & UCase(Replace(Me.pBesoinsBCCatcher, Chr(34), "")) & "*" Then
                                 
@@ -293,10 +304,17 @@ Public Function htmlTableToRawMatrix(ieh As IEHandler, tb As HTMLTable, dom As D
                                     arr = Split(s, ">")
                                     s = arr(1)
                                     s = Replace(UCase(s), "</DIV", "")
-                                    s = Replace(s, ".0", "")
-                                    s = Replace(s, ",0", "")
+'                                    s = Replace(s, ".0", "")
+'                                    s = Replace(s, ",0", "")
                                     
-                                    i.besoinsBC = CLng(s)
+                                    ' s = replaceAllDecimals(s)
+                                    
+                                    ' Application.DecimalSeparator
+                                    
+                                    i.besoinsBC = CDbl(Replace(s, ".", Application.DecimalSeparator))
+                                    
+                                    
+                                    'Debug.Print i.besoinsBC
                                     
                                 ElseIf (UCase(c.innerHTML) Like "*" & UCase(Me.pCmdCatcher1) & "*") Or _
                                     UCase(c.innerHTML) Like "*" & UCase(Me.pCmdCatcher2) & "*" Then
@@ -305,10 +323,13 @@ Public Function htmlTableToRawMatrix(ieh As IEHandler, tb As HTMLTable, dom As D
                                     arr = Split(s, ">")
                                     s = arr(1)
                                     s = Replace(UCase(s), "</DIV", "")
-                                    s = Replace(s, ".0", "")
-                                    s = Replace(s, ",0", "")
+'                                    s = Replace(s, ".0", "")
+'                                    s = Replace(s, ",0", "")
+
+                                    ' s = replaceAllDecimals(s)
                                     
-                                    i.order = CLng(s)
+                                    i.order = CDbl(Replace(s, ".", Application.DecimalSeparator))
+                                    'Debug.Print i.order
                                     
                                 ElseIf (UCase(c.innerHTML) Like "*" & UCase(Me.pExpCatcher1) & "*") Or _
                                     (UCase(c.innerHTML) Like "*" & UCase(Me.pExpCatcher2) & "*") Then
@@ -317,10 +338,14 @@ Public Function htmlTableToRawMatrix(ieh As IEHandler, tb As HTMLTable, dom As D
                                     arr = Split(s, ">")
                                     s = arr(1)
                                     s = Replace(UCase(s), "</DIV", "")
-                                    s = Replace(s, ".0", "")
-                                    s = Replace(s, ",0", "")
+'                                    s = Replace(s, ".0", "")
+'                                    s = Replace(s, ",0", "")
+
+                                    ' s = replaceAllDecimals(s)
                                     
-                                    i.ship = CLng(s)
+                                    i.ship = CDbl(Replace(s, ".", Application.DecimalSeparator))
+                                    
+                                    'Debug.Print i.ship
                                     
                                 End If
                                 
@@ -343,34 +368,64 @@ Public Function htmlTableToRawMatrix(ieh As IEHandler, tb As HTMLTable, dom As D
         
         If Not dom.stockInputElement Is Nothing Then
             tmpStock = dom.stockInputElement.Value
-            tmpStock = Replace(tmpStock, ".0", "")
-            tmpStock = Replace(tmpStock, ",0", "")
+            tmpStock = Replace(tmpStock, ".", Application.DecimalSeparator)
         End If
         
         If Not IsNumeric(tmpStock) Then tmpStock = "0"
         
         If Not dom.recvInputElement Is Nothing Then
             tmpRecv = dom.recvInputElement.Value
-            tmpRecv = Replace(tmpRecv, ".0", "")
-            tmpRecv = Replace(tmpRecv, ",0", "")
+            tmpRecv = Replace(tmpRecv, ".", Application.DecimalSeparator)
         End If
         
         If Not IsNumeric(tmpRecv) Then tmpRecv = "0"
         
         If Not dom.backlogInputElement Is Nothing Then
             tmpBacklog = dom.backlogInputElement.Value
-            tmpBacklog = Replace(tmpBacklog, ".0", "")
-            tmpBacklog = Replace(tmpBacklog, ",0", "")
+            tmpBacklog = Replace(tmpBacklog, ".", Application.DecimalSeparator)
         End If
+        
+        If Not dom.hazardsInputElement Is Nothing Then
+            tmpHazards = dom.hazardsInputElement.Value
+            tmpHazards = Replace(tmpHazards, ".", Application.DecimalSeparator)
+        End If
+        
+        
+        If Not dom.isupplierElement Is Nothing Then
+        
+            tmpSupplier = Trim(Right(dom.isupplierElement.innerText, Len(dom.isupplierElement.innerText) - 5))
+        End If
+        
+        
+        If Not dom.ipartnameElement Is Nothing Then
+        
+            tmpPartName = dom.ipartnameElement.innerText
+            tmpPartName = Trim(Split(tmpPartName, "-")(1))
+        End If
+        
+        
+        If Not dom.iapproElement Is Nothing Then
+            tmpResp2 = dom.iapproElement.Value
+        End If
+        
         
         If Not IsNumeric(tmpBacklog) Then tmpBacklog = "0"
         
-        Set tmp.iteration = ii
-        tmp.iteration.setStock CLng(tmpStock)
-        tmp.iteration.setRecv CLng(tmpRecv)
-        tmp.iteration.setBacklog CLng(tmpBacklog)
+        If Not IsNumeric(tmpHazards) Then tmpHazards = "0"
         
-        tmp.iteration.setComment 1, CStr(ieh.txtIsAvail)
+        Set tmp.iteration = ii
+        tmp.iteration.setStock CDbl(Replace(tmpStock, ".", Application.DecimalSeparator))
+        tmp.iteration.setRecv CDbl(Replace(tmpRecv, ".", Application.DecimalSeparator))
+        tmp.iteration.setBacklog CDbl(Replace(tmpBacklog, ".", Application.DecimalSeparator))
+        tmp.iteration.setPartName CStr(tmpPartName)
+        tmp.iteration.setSupplier CStr(tmpSupplier)
+        tmp.iteration.setResp CStr(tmpResp2)
+        ' aleas == hazards
+        tmp.iteration.setAleas CStr(tmpHazards)
+        
+        
+        
+        ' tmp.iteration.setComment 1, CStr(ieh.txtIsAvail)
         
         
         Set htmlTableToRawMatrix = tmp
@@ -420,7 +475,7 @@ Public Function htmlTableToRawMatrix(ieh As IEHandler, tb As HTMLTable, dom As D
                             
                             i.besoinsBC = 0
                             i.besoinsPC = 0
-                            If IsNumeric(s) Then i.besoinsBC = CLng(s)
+                            If IsNumeric(s) Then i.besoinsBC = CDbl(s)
                             
                         ElseIf cCounter = 2 Then
                         
@@ -479,7 +534,7 @@ Public Function htmlTableToRawMatrix(ieh As IEHandler, tb As HTMLTable, dom As D
         tmp.iteration.setRecv CLng(0)
         tmp.iteration.setBacklog CLng(tmpBacklog)
         
-        tmp.iteration.setComment 1, CStr(ieh.txtIsAvail)
+        ' tmp.iteration.setComment 1, CStr(ieh.txtIsAvail)
         
         
         
@@ -490,6 +545,43 @@ Public Function htmlTableToRawMatrix(ieh As IEHandler, tb As HTMLTable, dom As D
         End
     End If
         
+    
+End Function
+
+
+Private Function replaceAllDecimals(s) As String
+    
+    s = Replace(s, ".0", "")
+    s = Replace(s, ",0", "")
+    
+    s = Replace(s, ".1", "")
+    s = Replace(s, ",1", "")
+    
+    s = Replace(s, ".2", "")
+    s = Replace(s, ",2", "")
+    
+    s = Replace(s, ".3", "")
+    s = Replace(s, ",3", "")
+    
+    s = Replace(s, ".4", "")
+    s = Replace(s, ",4", "")
+    
+    s = Replace(s, ".5", "")
+    s = Replace(s, ",5", "")
+    
+    s = Replace(s, ".6", "")
+    s = Replace(s, ",6", "")
+    
+    s = Replace(s, ".7", "")
+    s = Replace(s, ",7", "")
+    
+    s = Replace(s, ".8", "")
+    s = Replace(s, ",8", "")
+    
+    s = Replace(s, ".9", "")
+    s = Replace(s, ",9", "")
+    
+    replaceAllDecimals = CStr(s)
     
 End Function
 

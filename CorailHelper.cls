@@ -42,6 +42,8 @@ Private e As E_TYPE_OF_CORAIL
 Private sh As Worksheet
 Private layout As TheLayout
 
+Private sth As StatusHandler
+
 
 
 
@@ -55,7 +57,8 @@ Public Sub run(listOfPartNumbers As InputListHelper)
     Set listaWejsciowa = listOfPartNumbers
 
     
-    
+    sth.init_statusbar i.Count
+    sth.show
     
     For Each el In i
     
@@ -77,6 +80,7 @@ Public Sub run(listOfPartNumbers As InputListHelper)
                 ' runner.zdarzenie.proceduraDoPodniesieniaPrzeniesieniaZawartosciKolekcji kolekcja
                 
                 'Debug.Print kolekcja.Count 'OK
+                sth.progress_increase
                 
                 Set runner = Nothing
                 
@@ -86,6 +90,9 @@ Public Sub run(listOfPartNumbers As InputListHelper)
         
         End If
     Next el
+    
+    
+    sth.hide
 End Sub
 
 
@@ -152,7 +159,7 @@ Public Sub makeLayout()
         With layout
             .addDayNamesAndMergeTopDateRows sh.Range("A3").End(xlToRight)
             .adjustLabelRow r
-            .colourFontsOnOtherThanBalanceColumns r
+            .colourFontsOnOtherThanBalanceColumns r.Offset(0, 1)
         End With
         
     Else
@@ -277,9 +284,11 @@ End Function
 Private Sub Class_Initialize()
     Set c = Nothing
     Set kolekcja = New Collection
+    Set sth = New StatusHandler
 End Sub
 
 Private Sub Class_Terminate()
     Set c = Nothing
     Set kolekcja = Nothing
+    Set sth = Nothing
 End Sub

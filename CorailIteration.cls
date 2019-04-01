@@ -34,12 +34,36 @@ Private item As CorailItem
 Private cItems As Collection
 
 Private pn As String
-Private stock As Long
-Private recv As Long
-Private backlog As Long
+Private stock As Double
+Private recv As Double
+Private backlog As Double
+' hazards == aleas in this case ;)
+Private aleas As Double
+
+
+Private supplier As String
+Private partName As String
+
+
+Private resp As String
 
 Private cmnt1 As String
 Private cmnt2 As String
+
+
+Public Property Get getSupplier() As String
+
+    getSupplier = CStr(supplier)
+End Property
+
+Public Property Get getresp() As String
+    getresp = CStr(resp)
+End Property
+
+Public Property Get getPartName() As String
+
+    getPartName = CStr(partName)
+End Property
 
 Public Property Get getComment1() As String
 
@@ -59,9 +83,14 @@ End Sub
 
 
 
-Public Property Get getBacklog() As Long
+Public Property Get getBacklog() As Double
 
-    getBacklog = CLng(backlog)
+    getBacklog = CDbl(backlog)
+End Property
+
+Public Property Get getAleas() As Double
+
+    getAleas = CDbl(aleas)
 End Property
 
 
@@ -70,27 +99,45 @@ Public Property Get getPN() As String
     getPN = pn
 End Property
 
-Public Property Get getStock() As Long
+Public Property Get getStock() As Double
     getStock = stock
 End Property
 
-Public Sub setStock(arg As Long)
+Public Sub setStock(arg As Double)
     
-    stock = CLng(arg)
+    stock = CDbl(arg)
 End Sub
 
-Public Property Get getRecv() As Long
+Public Property Get getRecv() As Double
     getRecv = recv
 End Property
 
-Public Sub setRecv(arg As Long)
+Public Sub setRecv(arg As Double)
     
-    recv = CLng(arg)
+    recv = CDbl(arg)
 End Sub
 
-Public Sub setBacklog(arg As Long)
+Public Sub setBacklog(arg As Double)
     
-    backlog = CLng(arg)
+    backlog = CDbl(arg)
+End Sub
+
+Public Sub setAleas(arg As Double)
+    aleas = CDbl(arg)
+End Sub
+
+
+Public Sub setSupplier(arg As String)
+    supplier = CStr(arg)
+End Sub
+
+Public Sub setPartName(arg As String)
+    partName = CStr(arg)
+End Sub
+
+
+Public Sub setResp(arg As String)
+    resp = CStr(arg)
 End Sub
 
 
@@ -114,9 +161,14 @@ End Property
 
 Private Sub Class_Initialize()
     Set cItems = New Collection
-    stock = 0
-    recv = 0
-    backlog = 0
+    stock = 0#
+    recv = 0#
+    backlog = 0#
+    
+    supplier = ""
+    partName = ""
+    
+    resp = ""
 End Sub
 
 Private Sub Class_Terminate()

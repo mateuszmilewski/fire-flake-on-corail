@@ -9,7 +9,7 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 'The MIT License (MIT)
 '
-'Copyright (c) 2017 FORREST
+'Copyright (c) 2019 FORREST
 ' Mateusz Milewski mateusz.milewski@opel.com aka FORREST
 '
 'Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -38,6 +38,7 @@ Public i As HTMLInputElement
 Public recvInputElement As HTMLInputElement
 Public stockInputElement As HTMLInputElement
 Public backlogInputElement As HTMLInputElement
+Public hazardsInputElement As HTMLInputElement
 Public partNumberInput As HTMLInputElement
 Public inputButton As HTMLInputButtonElement
 Public button As HTMLButtonElement
@@ -45,6 +46,11 @@ Public button As HTMLButtonElement
 Public irecvElement As IHTMLElement
 Public istockElement As IHTMLElement
 Public ibacklogElement As IHTMLElement
+Public ihazardsElement As IHTMLElement
+Public icoforElement As IHTMLElement
+Public ipartnameElement As IHTMLElement
+Public isupplierElement As IHTMLElement
+Public iapproElement As IHTMLElement
 
 
 Public a As HTMLAnchorElement

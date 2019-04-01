@@ -154,7 +154,7 @@ End Sub
 Private Function generateURL(r As Range, plt As String, pn As String) As String
 
     ' generateURL = "" & r.Offset(0, 2).Value & "/" & FFOC.G_URL_EXT &
-    'generateURL = "http://ta.control.erp.corail.inetpsa.com/getProductSummaryRead.do?beanId=96661053ZD"
+    ' generateURL = "http://ta.control.erp.corail.inetpsa.com/getProductSummaryRead.do?beanId=96661053ZD"
     
     generateURL = ""
     
@@ -545,6 +545,11 @@ Private Sub Class_Initialize()
     On Error Resume Next
     Set powloka = New ShellHandler
     
+    DoEvents
+    
+    On Error Resume Next
+    Set powloka = New ShellHandler
+    
     initBlockedParamOnFalse
     
 End Sub
@@ -582,10 +587,10 @@ Public Sub publicWait(arg As InternetExplorer)
 
     Do
         
-        Sleep 100
+        Sleep 200
         x = x + 1
         
-        If x > 500 Then
+        If x > 100 Then
             MsgBox "Timeout! Try again!"
             End
             
@@ -603,7 +608,7 @@ Public Sub innerWait()
 
     Do
         
-        Sleep 100
+        Sleep 50
         x = x + 1
         
         
@@ -625,43 +630,28 @@ End Sub
 Private Function loaded(ByRef ie As InternetExplorer) As Boolean
 
 
-    Dim obj As HTMLBody
+    Dim c As IHTMLElementCollection
     
     
-    Set obj = Nothing
+    Set c = Nothing
     
     
     
     On Error Resume Next
-    Set obj = ie.document.body
+    Set c = ie.document.getElementsByTagName("div")
+    DoEvents
     
-    'Debug.Print obj.innerHTML
-    
-    If obj Is Nothing Then
+    If c Is Nothing Then
         loaded = False
     Else
     
-        loaded = True
-    End If
-
+        If c.Length > 0 Then
     
-    'Set dom.doc = ie.document
-    '
-    'Dim obj As IHTMLElement
-    '
-    'Set obj = dom.doc.getElementsByClassName("ecwTitleMessageIhm")(0)
-    '
-    '
-    'If obj Is Nothing Then
-    '    loaded = False
-    'Else
-    '
-    '    If UCase(obj.innerHTML) Like UCase("*Product synthesis*") Then
-    '        loaded = True
-    '    Else
-    '        loaded = False
-    '    End If
-    'End If
+            loaded = True
+        Else
+            loaded = False
+        End If
+    End If
     
     
 End Function

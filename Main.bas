@@ -1,7 +1,7 @@
 Attribute VB_Name = "Main"
 'The MIT License (MIT)
 '
-'Copyright (c) 2017 FORREST
+'Copyright (c) 2018 FORREST
 ' Mateusz Milewski mateusz.milewski@opel.com aka FORREST
 '
 'Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,8 +22,14 @@ Attribute VB_Name = "Main"
 'OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 'SOFTWARE.
 
-
 Public Sub runMain(ictrl As IRibbonControl)
+    
+    login.CheckBoxHazards.Value = False
+    login.show
+End Sub
+
+
+Public Sub innerFromLogin()
 
 
     ThisWorkbook.Sheets(FFOC.G_SH_NM_REG).Range("RUN").Value = 1

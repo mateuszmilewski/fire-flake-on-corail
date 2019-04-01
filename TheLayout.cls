@@ -122,10 +122,11 @@ Public Function getDatesFromDropperAndFillLabels(r As Range, c As Collection) As
         
         r.Offset(-1, 3).Value = CStr(Weekday(tempDate, vbMonday))
         
-        r.Offset(0, 0).Value = "RQM"
-        r.Offset(0, 1).Value = "ORDER"
-        r.Offset(0, 2).Value = "SHIP"
-        r.Offset(0, 3).Value = "BALANCE"
+        ' RQM, ORDER, DELIVERY, BALANCE labels
+        r.Offset(0, 0).Value = CStr(ThisWorkbook.Sheets(FFOC.G_SH_NM_REG).Range("L1"))
+        r.Offset(0, 1).Value = CStr(ThisWorkbook.Sheets(FFOC.G_SH_NM_REG).Range("L2"))
+        r.Offset(0, 2).Value = CStr(ThisWorkbook.Sheets(FFOC.G_SH_NM_REG).Range("L3"))
+        r.Offset(0, 3).Value = CStr(ThisWorkbook.Sheets(FFOC.G_SH_NM_REG).Range("L4"))
         
         Set r = r.Offset(0, G_ITEM_OFFSET)
     
