@@ -191,7 +191,7 @@ Public Sub braceWithDom(e As E_TYPE_OF_CORAIL)
             Set .recvInputElement = Nothing
             Set .backlogInputElement = Nothing
             
-            Set .istockElement = tryGetDataFromMaestro("stock")
+            Set .istockElement = tryGetDataFromMaestro2("stock")
             Set .ibacklogElement = tryGetDataFromMaestro("backlog")
             
         ElseIf e = MANUAL Then
@@ -240,6 +240,51 @@ Private Sub Class_Terminate()
 End Sub
 
 
+Private Function tryGetDataFromMaestro2(what As String) As IHTMLElement
+    Set tryGetDataFromMaestro2 = Nothing
+    
+    With dom
+        
+        If what = "stock" Then
+            ' Set .iElementCollection = .doc.getElementsByClassName("ligneTableauSerre")
+            Set .iElement = .doc.getElementsByClassName("ligneTableauSerre")(0)
+            
+            On Error Resume Next
+            Set .iElementCollection = .iElement.getElementsByTagName("td")(0).getElementsByTagName("td")
+            
+            If Not .iElementCollection Is Nothing Then
+            
+                podlicz = 0
+                For Each el In .iElementCollection
+                
+                    Set .iElement = el
+                    If Not .iElement Is Nothing Then
+                        'Debug.Print iElement.innerHTML
+                        'Debug.Print iElement.outerHTML
+                        
+                        If podlicz = 1 Then
+                            
+                            If .iElement.innerHTML Like "*FONT*" Then
+                            
+                                Set .iElement = .iElement.getElementsByTagName("font")(0)
+                                ' Debug.Print .iElement.innerHTML ' oK
+                                Set tryGetDataFromMaestro2 = .iElement
+                                
+                                
+                            Else
+                            
+                                Set tryGetDataFromMaestro2 = .iElement
+                            End If
+                        End If
+                    End If
+                    
+                    podlicz = podlicz + 1
+                Next el
+            End If
+        End If
+    End With
+End Function
+
 Private Function tryGetDataFromMaestro(what As String) As IHTMLElement
 
     Set tryGetDataFromMaestro = Nothing
@@ -248,6 +293,7 @@ Private Function tryGetDataFromMaestro(what As String) As IHTMLElement
                 
         If what = "stock" Then
             Set .iElementCollection = .doc.getElementsByTagName("font")
+            
         End If
         If what = "backlog" Then
             Set .iElementCollection = .doc.getElementsByClassName("Donnee")
@@ -258,7 +304,8 @@ Private Function tryGetDataFromMaestro(what As String) As IHTMLElement
             
             Set iElement = el
             If Not iElement Is Nothing Then
-                ' Debug.Print iElement.innerHTML
+                Debug.Print iElement.innerHTML
+                Debug.Print iElement.outerHTML
                 
                 If podlicz = 1 Then
                 

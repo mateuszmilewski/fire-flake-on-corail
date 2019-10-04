@@ -295,3 +295,29 @@ Attribute VB_Name = "V"
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' feature - added hazards into stock if checkbox value is true
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+
+
+' v.29
+' 2019-09-17
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'
+' ParserHandler change new class name in order and ship for sau
+'Order and ship quantity have different ecwkeyname :
+'SX order example: <td ecwkeyname="orderedQuantity">
+'<div class="ecwButtonTexteOverOrdered number ecwButtonTexteOver">0.0</div></td>
+'LU order example: <td ecwkeyname="sauOrderedQuantity">
+' <div class="number ecwButtonTexteOverSauOrdered ecwButtonTexteOver">0.0</div></td> // but this "sau" is optional!
+'
+'
+'SX ship example:
+' <td ecwkeyname="orderedQuantity"><div class="ecwButtonTexteOverOrdered number ecwButtonTexteOver">0.0</div></td>
+'LU ship example:
+' <td ecwkeyname="sauOrderedQuantity"><div class="number ecwButtonTexteOverSauOrdered ecwButtonTexteOver">0.0</div></td> // but this "sau" is optional!
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+
+' v.30
+' 2019-10-04
+' MAESTRO STOCK FIX!!!
