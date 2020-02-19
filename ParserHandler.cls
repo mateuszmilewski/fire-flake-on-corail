@@ -117,6 +117,10 @@ Public Function htmlTableToRawMatrix(tb As HTMLTable, dom As DOMHandler, e As E_
     
     Dim s As String
     
+    ' new 21 oct 2019
+    ' Blockages in progress - decrement from stock
+    Dim tmpBIP As String
+    
     Dim tmpStock As String
     Dim tmpRecv As String
     Dim tmpBacklog As String
@@ -318,14 +322,10 @@ Public Function htmlTableToRawMatrix(tb As HTMLTable, dom As DOMHandler, e As E_
                                     arr = Split(s, ">")
                                     s = arr(1)
                                     s = Replace(UCase(s), "</DIV", "")
-'                                    s = Replace(s, ".0", "")
-'                                    s = Replace(s, ",0", "")
-                                    
                                     ' s = replaceAllDecimals(s)
                                     
-                                    i.besoinsPC = CDbl(Replace(s, ".", Application.DecimalSeparator))
-                                    i.besoinsPC = CDbl(Replace(s, ",", Application.DecimalSeparator))
-                                    'Debug.Print i.besoinsPC
+                                    s = adjustDecimalSeparator(s)
+                                    i.besoinsPC = CDbl(s)
                                     
                                 ElseIf UCase(Replace(c.innerHTML, Chr(34), "")) Like "*" & UCase(Replace(Me.pBesoinsBCCatcher, Chr(34), "")) & "*" Then
                                 
@@ -340,8 +340,8 @@ Public Function htmlTableToRawMatrix(tb As HTMLTable, dom As DOMHandler, e As E_
                                     
                                     ' Application.DecimalSeparator
                                     
-                                    i.besoinsBC = CDbl(Replace(s, ".", Application.DecimalSeparator))
-                                    i.besoinsBC = CDbl(Replace(s, ",", Application.DecimalSeparator))
+                                    s = adjustDecimalSeparator(s)
+                                    i.besoinsBC = CDbl(s)
                                     
                                     
                                     'Debug.Print i.besoinsBC
@@ -360,8 +360,8 @@ Public Function htmlTableToRawMatrix(tb As HTMLTable, dom As DOMHandler, e As E_
 
                                     ' s = replaceAllDecimals(s)
                                     
-                                    i.order = CDbl(Replace(s, ".", Application.DecimalSeparator))
-                                    i.order = CDbl(Replace(s, ",", Application.DecimalSeparator))
+                                    s = adjustDecimalSeparator(s)
+                                    i.order = CDbl(s)
                                     'Debug.Print i.order
                                     
                                 ElseIf (UCase(c.innerHTML) Like "*" & UCase(Me.pExpCatcher1) & "*") Or _
@@ -378,8 +378,8 @@ Public Function htmlTableToRawMatrix(tb As HTMLTable, dom As DOMHandler, e As E_
 
                                     ' s = replaceAllDecimals(s)
                                     
-                                    i.ship = CDbl(Replace(s, ".", Application.DecimalSeparator))
-                                    i.ship = CDbl(Replace(s, ",", Application.DecimalSeparator))
+                                    s = adjustDecimalSeparator(s)
+                                    i.ship = CDbl(s)
                                     
                                     'Debug.Print i.ship
                                     
@@ -404,30 +404,33 @@ Public Function htmlTableToRawMatrix(tb As HTMLTable, dom As DOMHandler, e As E_
         
         If Not dom.stockInputElement Is Nothing Then
             tmpStock = dom.stockInputElement.Value
-            tmpStock = Replace(tmpStock, ".", Application.DecimalSeparator)
-            tmpStock = Replace(tmpStock, ",", Application.DecimalSeparator)
+            tmpStock = adjustDecimalSeparator(tmpStock)
         End If
         
         If Not IsNumeric(tmpStock) Then tmpStock = "0"
         
         If Not dom.recvInputElement Is Nothing Then
             tmpRecv = dom.recvInputElement.Value
-            tmpRecv = Replace(tmpRecv, ".", Application.DecimalSeparator)
-            tmpRecv = Replace(tmpRecv, ",", Application.DecimalSeparator)
+            tmpRecv = adjustDecimalSeparator(tmpRecv)
         End If
         
         If Not IsNumeric(tmpRecv) Then tmpRecv = "0"
         
         If Not dom.backlogInputElement Is Nothing Then
             tmpBacklog = dom.backlogInputElement.Value
-            tmpBacklog = Replace(tmpBacklog, ".", Application.DecimalSeparator)
-            tmpBacklog = Replace(tmpBacklog, ",", Application.DecimalSeparator)
+            tmpBacklog = adjustDecimalSeparator(tmpBacklog)
         End If
         
         If Not dom.hazardsInputElement Is Nothing Then
             tmpHazards = dom.hazardsInputElement.Value
-            tmpHazards = Replace(tmpHazards, ".", Application.DecimalSeparator)
-            tmpHazards = Replace(tmpHazards, ",", Application.DecimalSeparator)
+            tmpHazards = adjustDecimalSeparator(tmpHazards)
+        End If
+        
+        If Not dom.iBlockagesInProgress Is Nothing Then
+        
+            tmpBIP = dom.iBlockagesInProgress.Value
+            tmpBIP = adjustDecimalSeparator(tmpBIP)
+            
         End If
         
         
@@ -450,24 +453,32 @@ Public Function htmlTableToRawMatrix(tb As HTMLTable, dom As DOMHandler, e As E_
         
         
         If Not IsNumeric(tmpBacklog) Then tmpBacklog = "0"
-        
+        If Not IsNumeric(tmpBIP) Then tmpBIP = "0"
         If Not IsNumeric(tmpHazards) Then tmpHazards = "0"
         
         Set tmp.iteration = ii
-        tmp.iteration.setStock CDbl(Replace(tmpStock, ".", Application.DecimalSeparator))
-        tmp.iteration.setStock CDbl(Replace(tmpStock, ",", Application.DecimalSeparator))
+        'tmp.iteration.setStock CDbl(Replace(tmpStock, ".", Application.DecimalSeparator))
+        'tmp.iteration.setStock CDbl(Replace(tmpStock, ",", Application.DecimalSeparator))
+        tmp.iteration.setStock CDbl(tmpStock)
         
-        tmp.iteration.setRecv CDbl(Replace(tmpRecv, ".", Application.DecimalSeparator))
-        tmp.iteration.setRecv CDbl(Replace(tmpRecv, ",", Application.DecimalSeparator))
+        'tmp.iteration.setRecv CDbl(Replace(tmpRecv, ".", Application.DecimalSeparator))
+        'tmp.iteration.setRecv CDbl(Replace(tmpRecv, ",", Application.DecimalSeparator))
+        tmp.iteration.setRecv CDbl(tmpRecv)
         
-        tmp.iteration.setBacklog CDbl(Replace(tmpBacklog, ".", Application.DecimalSeparator))
-        tmp.iteration.setBacklog CDbl(Replace(tmpBacklog, ",", Application.DecimalSeparator))
+        'tmp.iteration.setBacklog CDbl(Replace(tmpBacklog, ".", Application.DecimalSeparator))
+        'tmp.iteration.setBacklog CDbl(Replace(tmpBacklog, ",", Application.DecimalSeparator))
+        tmp.iteration.setBacklog CDbl(tmpBacklog)
         
         tmp.iteration.setPartName CStr(tmpPartName)
         tmp.iteration.setSupplier CStr(tmpSupplier)
         tmp.iteration.setResp CStr(tmpResp2)
         ' aleas == hazards
         tmp.iteration.setAleas CStr(tmpHazards)
+        
+        ' new element for Blockages in progress
+        'tmpBIP = CDbl(Replace(tmpBIP, ".", Application.DecimalSeparator))
+        'tmpBIP = CDbl(Replace(tmpBIP, ",", Application.DecimalSeparator))
+        tmp.iteration.setBlockagesInProgress CDbl(tmpBIP)
         
         
         
@@ -516,8 +527,9 @@ Public Function htmlTableToRawMatrix(tb As HTMLTable, dom As DOMHandler, e As E_
                         
                             arr = Split(s, "<")
                             s = Trim(arr(LBound(arr)))
-                            s = Replace(s, ".", Application.DecimalSeparator)
-                            s = Replace(s, ",", Application.DecimalSeparator)
+                            's = Replace(s, ".", Application.DecimalSeparator)
+                            's = Replace(s, ",", Application.DecimalSeparator)
+                            s = adjustDecimalSeparator(s)
                             
                             i.besoinsBC = 0
                             i.besoinsPC = 0
@@ -527,8 +539,9 @@ Public Function htmlTableToRawMatrix(tb As HTMLTable, dom As DOMHandler, e As E_
                         
                             arr = Split(s, "<")
                             s = Trim(arr(LBound(arr)))
-                            s = Replace(s, ".", Application.DecimalSeparator)
-                            s = Replace(s, ",", Application.DecimalSeparator)
+                            's = Replace(s, ".", Application.DecimalSeparator)
+                            's = Replace(s, ",", Application.DecimalSeparator)
+                            s = adjustDecimalSeparator(s)
                             i.order = 0
                             If IsNumeric(s) Then i.order = CLng(s)
                             
@@ -541,8 +554,9 @@ Public Function htmlTableToRawMatrix(tb As HTMLTable, dom As DOMHandler, e As E_
                                 arr = Split(arr(LBound(arr)), "</")
                             End If
                             s = Trim(arr(LBound(arr)))
-                            s = Replace(s, ".", Application.DecimalSeparator)
-                            s = Replace(s, ",", Application.DecimalSeparator)
+                            's = Replace(s, ".", Application.DecimalSeparator)
+                            's = Replace(s, ",", Application.DecimalSeparator)
+                            s = adjustDecimalSeparator(s)
                             
                             i.ship = 0
                             If IsNumeric(s) Then i.ship = CLng(s)
@@ -564,8 +578,9 @@ Public Function htmlTableToRawMatrix(tb As HTMLTable, dom As DOMHandler, e As E_
             If tmpStock Like "*IMG*" Then
                 tmpArr = Split(tmpStock, " ")
                 tmpStock = Trim(tmpArr(0))
-                tmpStock = Replace(tmpStock, ".", Application.DecimalSeparator)
-                tmpStock = Replace(tmpStock, ",", Application.DecimalSeparator)
+                'tmpStock = Replace(tmpStock, ".", Application.DecimalSeparator)
+                'tmpStock = Replace(tmpStock, ",", Application.DecimalSeparator)
+                tmpStock = adjustDecimalSeparator(tmpStock)
             End If
         End If
         
@@ -583,8 +598,9 @@ Public Function htmlTableToRawMatrix(tb As HTMLTable, dom As DOMHandler, e As E_
                 tmpArr = Split(tmpBacklog, ">")
                 tmpBacklog = tmpArr(1)
                 tmpBacklog = Replace(tmpBacklog, "</FONT", "")
-                tmpBacklog = Replace(tmpBacklog, ",", Application.DecimalSeparator)
-                tmpBacklog = Replace(tmpBacklog, ",", Application.DecimalSeparator)
+                'tmpBacklog = Replace(tmpBacklog, ",", Application.DecimalSeparator)
+                'tmpBacklog = Replace(tmpBacklog, ",", Application.DecimalSeparator)
+                tmpBacklog = adjustDecimalSeparator(tmpBacklog)
             End If
             
             
@@ -613,6 +629,63 @@ Public Function htmlTableToRawMatrix(tb As HTMLTable, dom As DOMHandler, e As E_
 End Function
 
 
+Private Function adjustDecimalSeparator(s) As String
+
+
+
+    Dim regHalf As Range
+    Set regHalf = ThisWorkbook.Sheets(FFOC.G_SH_NM_REG).Range("Q17")
+    
+    Dim myExcelDecimalPoint As String
+    myExcelDecimalPoint = CStr(Mid(regHalf.Value, 2, 1))
+    
+    If myExcelDecimalPoint = Application.DecimalSeparator Then
+        ' nothing to do!
+    Else
+        ' there is sth strage
+    End If
+    
+    ' in corail always dots
+
+
+    adjustDecimalSeparator = ""
+    
+    If Trim(s) <> "" Then
+
+        If myExcelDecimalPoint = "," Then
+            ' Debug.Print "Application.DecimalSeparator ,"
+            If s Like "*,*" Then
+                ' no operation req
+            ElseIf s Like "*.*" Then
+                s = Replace(s, ".", myExcelDecimalPoint)
+            Else
+                ' no operation req - int num
+            End If
+            
+        ElseIf myExcelDecimalPoint = "." Then
+            ' Debug.Print "Application.DecimalSeparator ."
+            If s Like "*.*" Then
+                ' no operation req
+            ElseIf s Like "*,*" Then
+                s = Replace(s, ",", myExcelDecimalPoint)
+            Else
+                ' no operation req - int num
+            End If
+        Else
+            MsgBox "wrong decimal separator - please change it in control panel!"
+            End
+        End If
+        
+        
+        adjustDecimalSeparator = CStr(s)
+    Else
+        adjustDecimalSeparator = ""
+    End If
+
+
+End Function
+
+' OBSOLETE
 Private Function replaceAllDecimals(s) As String
     
     s = Replace(s, ".0", "")

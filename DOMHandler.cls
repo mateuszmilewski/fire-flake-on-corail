@@ -45,6 +45,8 @@ Public button As HTMLButtonElement
 
 Public irecvElement As IHTMLElement
 Public istockElement As IHTMLElement
+'new 21 oct 2019
+Public iBlockagesInProgress As IHTMLElement
 Public ibacklogElement As IHTMLElement
 Public ihazardsElement As IHTMLElement
 Public icoforElement As IHTMLElement

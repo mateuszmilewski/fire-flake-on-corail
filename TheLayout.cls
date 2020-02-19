@@ -64,6 +64,7 @@ Public Function fillFirstRawLabels(r As Range) As Range
     r.Offset(0, FFOC.E_COMMON_CMNT2 - 1).Value = "Comment #2"
     r.Offset(0, FFOC.E_COMMON_FIRST_RUNOUT - 1).Value = "FIRST RUNOUT"
     r.Offset(0, FFOC.E_COMMON_BACKLOG - 1).Value = "Backlog"
+    r.Offset(0, FFOC.E_COMMON_Blockages_in_progress - 1).Value = "BIP"
     r.Offset(0, FFOC.E_COMMON_STOCK - 1).Value = "Stock"
     r.Offset(0, FFOC.E_COMMON_RECV - 1).Value = "Recv"
     

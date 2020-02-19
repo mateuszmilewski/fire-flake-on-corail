@@ -66,7 +66,9 @@ Private Sub openPartNumberOnProperCorail(corailType, plt, pn)
     
         If Trim(r.Value) = Trim(plt) And r.Offset(0, 3).Value = corailType Then
             
-            If corailType <> "MAESTRO" Then openIEonProperPN r.Offset(0, 2), pn
+            
+            'If corailType <> "MAESTRO" Then openIEonProperPN r.Offset(0, 2), pn
+            If corailType <> "MAESTRO" Then openChrome r.Offset(0, 2), pn
             If corailType = "MAESTRO" Then openIEonProperPltAndPartNumberInMaestro CStr(r.Offset(0, 2)), CStr(pn)
             Exit Do
         End If
@@ -113,4 +115,19 @@ Private Sub openIEonProperPN(link, pn)
     Set ie = New InternetExplorer
     ie.Visible = True
     ie.navigate CStr(link) & CStr(nxtUrl) & CStr(pn) & "#"
+End Sub
+
+
+Private Sub openChrome(link, pn)
+    
+    ' Shell ("C:\Program Files (x86)\Google\Chrome\Application\chrome.exe -url " & WebUrl)
+    Dim pth1 As String, postLink As String
+    pth1 = CStr("C:\Program Files (x86)\Google\Chrome\Application\chrome.exe -url ")
+    
+    
+    Dim fullUrl As String
+    postLink = "getProductSummaryRead.do?beanId="
+    fullUrl = CStr(pth1) & CStr(link) & CStr(postLink) & CStr(pn) & "#"
+    
+    Shell (fullUrl)
 End Sub

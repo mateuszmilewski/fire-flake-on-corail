@@ -39,6 +39,8 @@ Private recv As Double
 Private backlog As Double
 ' hazards == aleas in this case ;)
 Private aleas As Double
+' new 21 oct 2019
+Private blokcagesIP As Double
 
 
 Private supplier As String
@@ -93,6 +95,10 @@ Public Property Get getAleas() As Double
     getAleas = CDbl(aleas)
 End Property
 
+Public Property Get getBlockagesInProgress() As Double
+    getBlockagesInProgress = CDbl(blokcagesIP)
+End Property
+
 
 Public Property Get getPN() As String
     
@@ -124,6 +130,10 @@ End Sub
 
 Public Sub setAleas(arg As Double)
     aleas = CDbl(arg)
+End Sub
+
+Public Sub setBlockagesInProgress(arg As Double)
+    blokcagesIP = CDbl(arg)
 End Sub
 
 
@@ -164,6 +174,7 @@ Private Sub Class_Initialize()
     stock = 0#
     recv = 0#
     backlog = 0#
+    
     
     supplier = ""
     partName = ""

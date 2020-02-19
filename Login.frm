@@ -51,5 +51,6 @@ Private Sub BtnSubmit_Click()
     hide
     
     innerFromLogin
+
 End Sub
 

@@ -321,3 +321,16 @@ Attribute VB_Name = "V"
 ' v.30
 ' 2019-10-04
 ' MAESTRO STOCK FIX!!!
+
+
+
+' v.31
+' fix on open on chrome from corail parts using shell
+' my custom logic for decimal point reference from register Q17
+
+
+' v.32
+' some fix with BIP param
+
+' v.33
+' initial preparation for data from 2510

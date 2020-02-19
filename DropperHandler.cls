@@ -95,6 +95,9 @@ Public Sub run(sh As Worksheet, repRow As Long)
         sh.Cells(repRow, 2 + FFOC.E_COMMON_RECV - 1).Value = CDbl(dane.iteration.getRecv)
         sh.Cells(repRow, 2 + FFOC.E_COMMON_BACKLOG - 1).Value = CDbl(dane.iteration.getBacklog)
         
+        ' NEW 21 OCT 2019
+        sh.Cells(repRow, 2 + FFOC.E_COMMON_Blockages_in_progress - 1).Value = dane.iteration.getBlockagesInProgress
+        
         sh.Cells(repRow, 2 + FFOC.E_COMMON_PART_NAME - 1).Value = dane.iteration.getPartName
         sh.Cells(repRow, 2 + FFOC.E_COMMON_SUPPLIER - 1).Value = dane.iteration.getSupplier
         
@@ -157,7 +160,8 @@ Public Sub run(sh As Worksheet, repRow As Long)
                 ' Debug.Print dstr
                 
                 If r.Column = (FFOC.E_COMMON_FIRST_RQM + 1) And CDate(dstr) < Date Then
-                    r.Offset(0, 3).FormulaR1C1 = "=RC[-1]-RC[-3]+RC[-5]"
+                    ' -RC[-6] new on 21 oct 2019 - for Blockages_in_progress
+                    r.Offset(0, 3).FormulaR1C1 = "=RC[-1]-RC[-3]+RC[-5]-RC[-6]"
                     
                 ElseIf r.Column = (FFOC.E_COMMON_FIRST_RQM + 1) And CDate(dstr) >= Date Then
                     r.Offset(0, 3).FormulaR1C1 = "=RC[-1]-RC[-3]+RC[-5]+RC[" & CStr(gdzieJestRecvOffsetowo) & "]"

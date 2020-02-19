@@ -158,6 +158,11 @@ Public Sub braceWithDom(e As E_TYPE_OF_CORAIL)
             Set .hazardsInputElement = .doc.getElementById("aleatoriesSinceFJU")
             
             
+            ' new iBlockagesInProgress - return nothing if html element do not recognized
+            On Error Resume Next
+            Set .iBlockagesInProgress = pGetBlockagesInProgress()
+            
+            
             On Error Resume Next
             Set .ipartnameElement = .doc.getElementsByClassName("descriptionProduct")(0).getElementsByTagName("a")(0)
             
@@ -207,6 +212,33 @@ Public Sub braceWithDom(e As E_TYPE_OF_CORAIL)
     
     
 End Sub
+
+
+Private Function pGetBlockagesInProgress()
+
+
+    Set pGetBlockagesInProgress = Nothing
+
+    On Error Resume Next
+    Set dom.iElementCollection = dom.doc.getElementsByName("currentBlockingCount")
+    
+    If Not com.iElementCollection Is Nothing Then
+        For Each el In dom.iElementCollection
+        
+            Set dom.iElement = el
+            If Not dom.iElement Is Nothing Then
+                If dom.iElement.outerHTML Like "*currentBlockingCount*" Then
+                    Set pGetBlockagesInProgress = dom.iElement
+                    Exit For
+                End If
+            End If
+            
+            
+        Next el
+               
+    
+    End If
+End Function
 
 
 Private Sub Class_Initialize()
